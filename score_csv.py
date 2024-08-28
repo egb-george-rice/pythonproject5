@@ -1,90 +1,153 @@
-import sys
-import os
 import pandas as pd
-from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QLineEdit, QPushButton, QVBoxLayout, QHBoxLayout, QMessageBox, QFileDialog
+import os
+import sys
+import tkinter as tk
+from tkinter import filedialog, messagebox
 
-class CSVProcessorGUI(QWidget):
-    def __init__(self):
-        super().__init__()
-        self.init_ui()
+class ScoreCSVApp:
+    def __init__(self, root, input_file=None, output_file=None):
+        self.root = root
+        self.root.title("Score CSV")
+        self.input_file = input_file
+        self.output_file = output_file
 
-    def init_ui(self):
-        self.setWindowTitle('Clean and Score your CSV')
+        # Create GUI elements
+        self.label_input = tk.Label(root, text="Source CSV File:")
+        self.label_input.pack()
 
-        # Introductory message
-        self.intro_label = QLabel(
-            "This module will clean and score a CSV file downloaded from QGIS."
-            "Before running this module, you must calculate the buildable acres for each parcel."
-        )
-        self.intro_label.setWordWrap(True)
+        self.entry_input = tk.Entry(root, width=50)
+        self.entry_input.pack()
+        if self.input_file:
+            self.entry_input.insert(0, self.input_file)
 
-        # Input file browser
-        self.input_label = QLabel('Select input CSV file:', self)
-        self.input_path = QLineEdit(self)
-        self.input_browse = QPushButton('Browse', self)
-        self.input_browse.clicked.connect(self.browse_input_file)
+        self.button_browse_input = tk.Button(root, text="Browse", command=self.browse_input_file)
+        self.button_browse_input.pack()
 
-        # Output file browser
-        self.output_label = QLabel('Select output file:', self)
-        self.output_path = QLineEdit(self)
-        self.output_browse = QPushButton('Browse', self)
-        self.output_browse.clicked.connect(self.browse_output_file)
+        self.label_output = tk.Label(root, text="Save As:")
+        self.label_output.pack()
 
-        # Process button
-        self.process_button = QPushButton('Process CSV', self)
-        self.process_button.clicked.connect(self.process_csv)
+        self.entry_output = tk.Entry(root, width=50)
+        self.entry_output.pack()
+        if self.output_file:
+            self.entry_output.insert(0, self.output_file)
 
-        # Layout
-        vbox = QVBoxLayout()
-        vbox.addWidget(self.intro_label)
-        vbox.addWidget(self.input_label)
-        hbox1 = QHBoxLayout()
-        hbox1.addWidget(self.input_path)
-        hbox1.addWidget(self.input_browse)
-        vbox.addLayout(hbox1)
-        vbox.addWidget(self.output_label)
-        hbox2 = QHBoxLayout()
-        hbox2.addWidget(self.output_path)
-        hbox2.addWidget(self.output_browse)
-        vbox.addLayout(hbox2)
-        vbox.addWidget(self.process_button)
-        self.setLayout(vbox)
+        self.button_browse_output = tk.Button(root, text="Browse", command=self.browse_output_file)
+        self.button_browse_output.pack()
+
+        self.button_process = tk.Button(root, text="Process CSV", command=self.process_csv)
+        self.button_process.pack()
 
     def browse_input_file(self):
-        options = QFileDialog.Options()
-        file_name, _ = QFileDialog.getOpenFileName(self, "Select input CSV file", "", "CSV Files (*.csv);;All Files (*)", options=options)
-        if file_name:
-            self.input_path.setText(file_name)
+        self.input_file = filedialog.askopenfilename(title="Select the source CSV file",
+                                                     filetypes=[("CSV Files", "*.csv")])
+        if self.input_file:
+            self.entry_input.delete(0, tk.END)
+            self.entry_input.insert(0, self.input_file)
 
     def browse_output_file(self):
-        options = QFileDialog.Options()
-        file_name, _ = QFileDialog.getSaveFileName(self, "Select output CSV file", "", "CSV Files (*.csv);;All Files (*)", options=options)
-        if file_name:
-            self.output_path.setText(file_name)
+        self.output_file = filedialog.asksaveasfilename(title="Save As",
+                                                        defaultextension=".csv",
+                                                        filetypes=[("CSV Files", "*.csv")])
+        if self.output_file:
+            self.entry_output.delete(0, tk.END)
+            self.entry_output.insert(0, self.output_file)
 
     def process_csv(self):
-        input_file = self.input_path.text()
-        output_file = self.output_path.text()
-
-        if not input_file or not output_file:
-            QMessageBox.warning(self, "Input/Output Error", "Both input and output files must be specified.")
-            return
-
         try:
-            df = pd.read_csv(input_file)
+            # Load the CSV file
+            df = pd.read_csv(self.input_file, dtype={'parcel_id': str})  # Ensure parcel_id remains as a string
 
-            # Example scoring logic, replace with your logic
-            df['Score'] = df['Bacres'] * 100 / df['acreage_calc']
-            df.to_csv(output_file, index=False)
-            QMessageBox.information(self, "Success", "CSV processed and saved successfully.")
+            # Example scoring process - adjust as needed
+            df['score'] = df.apply(self.calculate_score, axis=1)
+
+            # Save the processed CSV file
+            df.to_csv(self.output_file, index=False)
+
+            # Close the GUI after processing
+            self.root.quit()
+            messagebox.showinfo("Success", "CSV file processed successfully.")
+
         except Exception as e:
-            QMessageBox.critical(self, "Error", f"An error occurred while processing the CSV: {str(e)}")
+            messagebox.showerror("Error", f"An error occurred while processing the CSV file: {str(e)}")
+
+    def calculate_score(self, row):
+        score = 0
+
+        # Extract the values from the row and handle missing values
+        acreage_calc = row.get('acreage_calc', 0)
+        Bacres = row.get('Bacres', 0)
+        distance_to_tx_line = row.get('distance_to_transmission_line_miles', 0)
+        voltage_of_closest_line = row.get('voltage_of_closest_line', 0)
+        mkt_val_land = row.get('mkt_val_land', 0)
+
+        # Calculating land value per acre
+        land_value_per_acre = mkt_val_land / acreage_calc if acreage_calc != 0 else 0
+
+        # Calculate buildable acres percentage
+        buildable_acres_pc = (Bacres / acreage_calc) * 100 if acreage_calc != 0 else 0
+
+        # Debugging output
+        print(f"Processing row with acreage_calc: {acreage_calc}, Bacres: {Bacres}, distance_to_tx_line: {distance_to_tx_line}, voltage: {voltage_of_closest_line}, land_value_per_acre: {land_value_per_acre}")
+
+        # 1. acreage_calc scoring (Weight: 3)
+        if acreage_calc > 750:
+            score += 9  # 3 points * weight 3
+        elif 501 <= acreage_calc <= 750:
+            score += 6  # 2 points * weight 3
+        elif 250 <= acreage_calc <= 500:
+            score += 3  # 1 point * weight 3
+
+        # 2. Buildable acres percentage (Weight: 3)
+        if buildable_acres_pc > 70:
+            score += 9  # 3 points * weight 3
+        elif 50 <= buildable_acres_pc <= 70:
+            score += 6  # 2 points * weight 3
+        elif 30 <= buildable_acres_pc <= 50:
+            score += 3  # 1 point * weight 3
+
+        # 3. Proximity to transmission line (Weight: 3)
+        if distance_to_tx_line == 0:
+            score += 9  # 3 points * weight 3
+        elif 0 < distance_to_tx_line <= 0.5:
+            score += 6  # 2 points * weight 3
+        elif 0.5 < distance_to_tx_line <= 1:
+            score += 3  # 1 point * weight 3
+
+        # 4. Size of transmission line (Weight: 2)
+        if voltage_of_closest_line > 500:
+            score += 6  # 3 points * weight 2
+        elif 235 <= voltage_of_closest_line <= 500:
+            score += 4  # 2 points * weight 2
+        elif 100 <= voltage_of_closest_line < 235:
+            score += 2  # 1 point * weight 2
+
+        # 5. Land value per acre (Weight: 2)
+        if land_value_per_acre > 2000:
+            score += 0  # 0 points * weight 2 (No points for land value per acre > $2000)
+        elif 1000 <= land_value_per_acre <= 2000:
+            score += 2  # 1 point * weight 2
+        elif 500 <= land_value_per_acre < 1000:
+            score += 4  # 2 points * weight 2
+        elif 0 < land_value_per_acre < 500:
+            score += 6  # 3 points * weight 2
+        # Land value per acre of '0' gets 0 points added to the score
+        elif land_value_per_acre == 0:
+            score += 0
+
+        print(f"Calculated score for row: {score}")
+        return score
+
 
 def main():
-    app = QApplication(sys.argv)
-    gui = CSVProcessorGUI()
-    gui.show()
-    sys.exit(app.exec_())
+    root = tk.Tk()
+    if len(sys.argv) > 1:
+        input_file = sys.argv[1]
+        output_file = input_file.replace(".csv", "_clean.csv")
+        app = ScoreCSVApp(root, input_file=input_file, output_file=output_file)
+    else:
+        app = ScoreCSVApp(root)
+    root.mainloop()
+
 
 if __name__ == "__main__":
     main()
