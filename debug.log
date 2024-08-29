@@ -1,17 +1,11 @@
-2024-08-26 12:33:05,966 - DEBUG - Starting new HTTPS connection (1): reportallusa.com:443
-2024-08-26 12:33:06,546 - DEBUG - https://reportallusa.com:443 "GET /api/parcels?client=RqMXhNFKlQ&v=9&county_id=39163&owner=&parcel_id=&calc_acreage_min=300&returnGeometry=true&f=geojson&page=1 HTTP/11" 200 None
-2024-08-26 12:33:06,596 - DEBUG - Starting new HTTPS connection (1): reportallusa.com:443
-2024-08-26 12:33:06,888 - DEBUG - https://reportallusa.com:443 "GET /api/parcels?client=RqMXhNFKlQ&v=9&county_id=39163&owner=&parcel_id=&calc_acreage_min=300&returnGeometry=true&f=geojson&page=2 HTTP/11" 200 None
-2024-08-26 12:33:06,939 - DEBUG - Starting new HTTPS connection (1): reportallusa.com:443
-2024-08-26 12:33:07,270 - DEBUG - https://reportallusa.com:443 "GET /api/parcels?client=RqMXhNFKlQ&v=9&county_id=39163&owner=&parcel_id=&calc_acreage_min=300&returnGeometry=true&f=geojson&page=3 HTTP/11" 200 None
-2024-08-26 12:33:07,337 - DEBUG - Starting new HTTPS connection (1): reportallusa.com:443
-2024-08-26 12:33:07,695 - DEBUG - https://reportallusa.com:443 "GET /api/parcels?client=RqMXhNFKlQ&v=9&county_id=39163&owner=&parcel_id=&calc_acreage_min=300&returnGeometry=true&f=geojson&page=4 HTTP/11" 200 None
-2024-08-26 12:33:07,749 - DEBUG - Starting new HTTPS connection (1): reportallusa.com:443
-2024-08-26 12:33:08,082 - DEBUG - https://reportallusa.com:443 "GET /api/parcels?client=RqMXhNFKlQ&v=9&county_id=39163&owner=&parcel_id=&calc_acreage_min=300&returnGeometry=true&f=geojson&page=5 HTTP/11" 200 None
-2024-08-26 12:33:08,156 - DEBUG - Starting new HTTPS connection (1): reportallusa.com:443
-2024-08-26 12:33:08,421 - DEBUG - https://reportallusa.com:443 "GET /api/parcels?client=RqMXhNFKlQ&v=9&county_id=39163&owner=&parcel_id=&calc_acreage_min=300&returnGeometry=true&f=geojson&page=6 HTTP/11" 200 None
-2024-08-26 12:33:08,483 - DEBUG - Starting new HTTPS connection (1): reportallusa.com:443
-2024-08-26 12:33:08,772 - DEBUG - https://reportallusa.com:443 "GET /api/parcels?client=RqMXhNFKlQ&v=9&county_id=39163&owner=&parcel_id=&calc_acreage_min=300&returnGeometry=true&f=geojson&page=7 HTTP/11" 200 None
-2024-08-26 12:33:08,861 - DEBUG - Starting new HTTPS connection (1): reportallusa.com:443
-2024-08-26 12:33:09,240 - DEBUG - https://reportallusa.com:443 "GET /api/parcels?client=RqMXhNFKlQ&v=9&county_id=39163&owner=&parcel_id=&calc_acreage_min=300&returnGeometry=true&f=geojson&page=8 HTTP/11" 200 None
-2024-08-26 12:33:47,084 - INFO - Created 77 records
+2024-08-29 11:43:40,114 - DEBUG - Starting new HTTPS connection (1): reportallusa.com:443
+2024-08-29 11:43:40,407 - DEBUG - https://reportallusa.com:443 "GET /api/parcels?client=RqMXhNFKlQ&v=9&county_id=39149&owner=Francis+Wiley%3B+Jws+Farms%3B+Pruden+Jeraldine%3B+Topalov%3B+Strayer+Farms&parcel_id=&calc_acreage_min=&returnGeometry=true&f=geojson&page=1 HTTP/11" 200 None
+2024-08-29 11:43:40,446 - DEBUG - Starting new HTTPS connection (1): reportallusa.com:443
+2024-08-29 11:43:40,659 - DEBUG - https://reportallusa.com:443 "GET /api/parcels?client=RqMXhNFKlQ&v=9&county_id=39149&owner=Francis+Wiley%3B+Jws+Farms%3B+Pruden+Jeraldine%3B+Topalov%3B+Strayer+Farms&parcel_id=&calc_acreage_min=&returnGeometry=true&f=geojson&page=2 HTTP/11" 200 None
+2024-08-29 11:43:40,725 - DEBUG - Starting new HTTPS connection (1): reportallusa.com:443
+2024-08-29 11:43:40,973 - DEBUG - https://reportallusa.com:443 "GET /api/parcels?client=RqMXhNFKlQ&v=9&county_id=39149&owner=Francis+Wiley%3B+Jws+Farms%3B+Pruden+Jeraldine%3B+Topalov%3B+Strayer+Farms&parcel_id=&calc_acreage_min=&returnGeometry=true&f=geojson&page=3 HTTP/11" 200 None
+2024-08-29 11:43:41,019 - DEBUG - Starting new HTTPS connection (1): reportallusa.com:443
+2024-08-29 11:43:41,396 - DEBUG - https://reportallusa.com:443 "GET /api/parcels?client=RqMXhNFKlQ&v=9&county_id=39149&owner=Francis+Wiley%3B+Jws+Farms%3B+Pruden+Jeraldine%3B+Topalov%3B+Strayer+Farms&parcel_id=&calc_acreage_min=&returnGeometry=true&f=geojson&page=4 HTTP/11" 200 None
+2024-08-29 11:43:41,397 - DEBUG - Starting new HTTPS connection (1): reportallusa.com:443
+2024-08-29 11:43:41,648 - DEBUG - https://reportallusa.com:443 "GET /api/parcels?client=RqMXhNFKlQ&v=9&county_id=39149&owner=Francis+Wiley%3B+Jws+Farms%3B+Pruden+Jeraldine%3B+Topalov%3B+Strayer+Farms&parcel_id=&calc_acreage_min=&returnGeometry=true&f=geojson&page=5 HTTP/11" 200 None
+2024-08-29 11:44:20,612 - INFO - Created 50 records

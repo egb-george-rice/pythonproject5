@@ -104,8 +104,8 @@ def process_csv(input_file, output_file):
             df['acreage_adjacent_with_sameowner'] = df['acreage_adjacent_with_sameowner'].fillna(0).astype(int)
 
         # Calculate quality scores
-        df['Score'] = df.apply(calculate_quality_score, axis=1)
-        df['Score'] = df['Score'].round(1)
+        # df['Score'] = df.apply(calculate_quality_score, axis=1)
+        # df['Score'] = df['Score'].round(1)
 
         # Select and order the specified columns, ensure 'BAcres' is next to 'county_id'
         essential_columns = [

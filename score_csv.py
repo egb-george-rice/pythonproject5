@@ -3,6 +3,7 @@ import os
 import sys
 import tkinter as tk
 from tkinter import filedialog, messagebox
+import subprocess
 
 class ScoreCSVApp:
     def __init__(self, root, input_file=None, output_file=None):
@@ -63,12 +64,30 @@ class ScoreCSVApp:
             # Save the processed CSV file
             df.to_csv(self.output_file, index=False)
 
-            # Close the GUI after processing
-            self.root.quit()
+            # Close the GUI before the next step
+            self.root.withdraw()
+
+            # Notify the user of success
             messagebox.showinfo("Success", "CSV file processed successfully.")
+
+            # Ask if the user wants to clean the CSV
+            self.ask_to_clean_csv()
 
         except Exception as e:
             messagebox.showerror("Error", f"An error occurred while processing the CSV file: {str(e)}")
+
+    def ask_to_clean_csv(self):
+        response = messagebox.askyesno("Clean CSV", "Would you like to clean the new CSV file?")
+        if response:
+            try:
+                script_path = os.path.join(os.path.dirname(__file__), 'clean_csv.py')
+                if not os.path.exists(script_path):
+                    messagebox.showerror("Error", f'Script {script_path} not found.')
+                    return
+                subprocess.run([sys.executable, script_path, self.output_file], check=True)
+            except Exception as e:
+                messagebox.showerror("Error", f"Error running the clean CSV script: {str(e)}")
+        self.root.quit()
 
     def calculate_score(self, row):
         score = 0
@@ -137,17 +156,15 @@ class ScoreCSVApp:
         print(f"Calculated score for row: {score}")
         return score
 
-
 def main():
     root = tk.Tk()
     if len(sys.argv) > 1:
         input_file = sys.argv[1]
-        output_file = input_file.replace(".csv", "_clean.csv")
+        output_file = input_file.replace(".csv", "_scored.csv")
         app = ScoreCSVApp(root, input_file=input_file, output_file=output_file)
     else:
         app = ScoreCSVApp(root)
     root.mainloop()
-
 
 if __name__ == "__main__":
     main()

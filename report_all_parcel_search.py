@@ -104,7 +104,6 @@ class ReportAllParcelSearch(QWidget):
                         continue
                     else:
                         break
-
                 else:
                     break
 
@@ -121,6 +120,7 @@ class ReportAllParcelSearch(QWidget):
 
     def display_results(self, gdf):
         if not gdf.empty:
+            self.close()  # Close the initial dialog before showing the "Save As" dialog
             options = QFileDialog.Options()
             options |= QFileDialog.DontUseNativeDialog
             desktop_path = os.path.join(os.path.expanduser('~'), 'Desktop')
@@ -134,8 +134,10 @@ class ReportAllParcelSearch(QWidget):
                 self.ask_for_proximity_analysis(save_path, gdf)
             else:
                 QMessageBox.information(self, 'Cancelled', 'Save operation cancelled.')
+                self.close_application()
         else:
             QMessageBox.warning(self, 'No Data', 'There is no data to save.')
+            self.close_application()
 
     def ask_for_proximity_analysis(self, save_path, gdf):
         response = QMessageBox.question(self, 'Transmission Line Proximity Analysis',
