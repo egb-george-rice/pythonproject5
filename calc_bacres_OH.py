@@ -8,12 +8,13 @@ from shapely.geometry import box
 from osgeo import gdal
 import sys
 import os
-import subprocess  # <--- This line was missing
+import subprocess
 import tkinter as tk
 from tkinter import filedialog, messagebox
 
 # Enable GDAL exceptions
 gdal.UseExceptions()
+
 
 def clip_raster_by_mask(raster_file, mask_layer):
     with rasterio.open(raster_file) as src:
@@ -35,10 +36,12 @@ def clip_raster_by_mask(raster_file, mask_layer):
 
     return clipped_raster_file
 
+
 def calculate_slope(clipped_raster_file):
     slope_file = str(Path(clipped_raster_file).parent / (Path(clipped_raster_file).stem + "_slope.tif"))
     gdal.DEMProcessing(slope_file, clipped_raster_file, 'slope', computeEdges=True, options=['-p'])
     return slope_file
+
 
 def polygonize_slope(slope_file):
     with rasterio.open(slope_file) as src:
@@ -57,6 +60,7 @@ def polygonize_slope(slope_file):
     slope_gdf.to_file(polygonized_slope_file)
 
     return slope_gdf
+
 
 def calculate_difference(original_vector, slope_gdf, wetlands_file):
     print("Loading wetlands data...")
@@ -87,7 +91,8 @@ def calculate_difference(original_vector, slope_gdf, wetlands_file):
         possible_matches = non_buildable_gdf.iloc[possible_matches_index]
 
         if not possible_matches.empty:
-            difference = gpd.overlay(gpd.GeoDataFrame([parcel], crs=original_vector.crs), possible_matches, how='difference')
+            difference = gpd.overlay(gpd.GeoDataFrame([parcel], crs=original_vector.crs), possible_matches,
+                                     how='difference')
             difference_results.append(difference)
         else:
             difference_results.append(gpd.GeoDataFrame([parcel], crs=original_vector.crs))
@@ -97,12 +102,14 @@ def calculate_difference(original_vector, slope_gdf, wetlands_file):
     print("Difference calculation complete.")
     return difference_gdf
 
+
 def calculate_overlap(difference_gdf, original_vector):
     overlap_gdf = gpd.overlay(difference_gdf, original_vector, how='intersection')
     overlap_gdf['overlap_area'] = overlap_gdf.area
     overlap_gdf['overlap_pc'] = (overlap_gdf['overlap_area'] / original_vector.area) * 100
 
     return overlap_gdf
+
 
 def calculate_bacres(overlap_gdf, original_vector):
     original_vector['overlap_pc'] = pd.to_numeric(overlap_gdf['overlap_pc'], errors='coerce')
@@ -113,6 +120,7 @@ def calculate_bacres(overlap_gdf, original_vector):
 
     original_vector['Bacres'] = (original_vector['overlap_pc'] * original_vector['acreage_calc']) / 100
     return original_vector
+
 
 def run_analysis(vector_file, slope_file, wetlands_file):
     try:
@@ -152,6 +160,8 @@ def run_analysis(vector_file, slope_file, wetlands_file):
 
     except Exception as e:
         print(f"An error occurred: {str(e)}")
+        return None
+
 
 def main():
     slope_file = r"C:\Users\georg\OneDrive\Desktop\RA_pull_files\Ohio\Base maps\DEM\oh_dem_hs\dblbnd.adf"
@@ -170,20 +180,25 @@ def main():
 
     print(f"Vector file selected: {vector_file}")
     csv_output_file = run_analysis(vector_file, slope_file, wetlands_file)
-    print("Analysis completed.")
 
-    root = tk.Tk()
-    root.withdraw()
-    response = messagebox.askyesno("Parcel Scoring", "Do you want to run a parcel_score on the file?")
-    if response:
-        try:
-            script_path = os.path.join(os.path.dirname(__file__), 'score_csv.py')
-            if not os.path.exists(script_path):
-                messagebox.showerror("Error", f'Script {script_path} not found.')
-                return
-            subprocess.run([sys.executable, script_path, csv_output_file], check=True)
-        except Exception as e:
-            messagebox.showerror("Error", f'Error running the parcel scoring script: {str(e)}')
+    if csv_output_file:
+        print("Analysis completed.")
+        root = tk.Tk()
+        root.withdraw()
+        response = messagebox.askyesno("Parcel Scoring", "Do you want to run a parcel score on the file?")
+        if response:
+            try:
+                script_path = os.path.join(os.path.dirname(__file__), 'score_csv.py')
+                if not os.path.exists(script_path):
+                    messagebox.showerror("Error", f'Script {script_path} not found.')
+                    return
+                subprocess.run([sys.executable, script_path, csv_output_file], check=True)
+                messagebox.showinfo("Success", "Parcel scoring completed successfully.")
+            except Exception as e:
+                messagebox.showerror("Error", f'Error running the parcel scoring script: {str(e)}')
+    else:
+        print("Analysis failed. No scoring script will be run.")
+
 
 if __name__ == "__main__":
     main()

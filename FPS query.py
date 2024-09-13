@@ -36,7 +36,11 @@ def query_trestleiq(street_line1, city, state, zip_code):
 # Function to format the response for better readability
 def format_response(response):
     if "error" in response:
-        return f"Error: {response['error'].get('message', 'An error occurred')}"
+        error_message = response.get('error')
+        if isinstance(error_message, dict):
+            return f"Error: {error_message.get('message', 'An error occurred')}"
+        else:
+            return f"Error: {error_message}"
 
     # Formatting the location details
     output = []
