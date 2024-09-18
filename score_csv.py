@@ -100,6 +100,8 @@ def main(csv_file):
     # Ask the user if they want to clean the CSV file
     root = tk.Tk()
     root.withdraw()
+    root.wm_attributes('-topmost', 1)  # Ensure the root window is always on top
+
     response = messagebox.askyesno("Clean CSV", "Do you wish to clean the CSV file?")
     if response:
         try:

@@ -99,6 +99,9 @@ class App:
             # Close the main window
             self.root.withdraw()
 
+            # Show completion dialog with file paths and processing time
+            self.show_completion_dialog(self.output_file, self.subset_file, processing_time)
+
             # Ask the user if they want to perform buildable acreage analysis
             response = messagebox.askyesno("Buildable Acreage Analysis",
                                            "Would you like to perform a buildable acreage analysis on these parcels?")
@@ -108,8 +111,7 @@ class App:
                                            'calc_bacres_OH.py')  # Update this path to the actual path of your calc_bacres_OH.py script
                 subprocess.run([sys.executable, script_path, self.subset_file])
 
-            # Show completion dialog with file paths and processing time
-            self.show_completion_dialog(self.output_file, self.subset_file, processing_time)
+
 
         except Exception as e:
             messagebox.showerror("Error", f"An error occurred: {str(e)}")

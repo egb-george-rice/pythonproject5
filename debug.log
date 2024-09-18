@@ -1,11 +1,5 @@
-2024-09-11 20:17:23,808 - DEBUG - Starting new HTTPS connection (1): reportallusa.com:443
-2024-09-11 20:17:24,447 - DEBUG - https://reportallusa.com:443 "GET /api/parcels?client=RqMXhNFKlQ&v=9&county_id=39067&owner=&parcel_id=&calc_acreage_min=300&returnGeometry=true&f=geojson&page=1 HTTP/11" 200 None
-2024-09-11 20:17:24,506 - DEBUG - Starting new HTTPS connection (1): reportallusa.com:443
-2024-09-11 20:17:24,952 - DEBUG - https://reportallusa.com:443 "GET /api/parcels?client=RqMXhNFKlQ&v=9&county_id=39067&owner=&parcel_id=&calc_acreage_min=300&returnGeometry=true&f=geojson&page=2 HTTP/11" 200 None
-2024-09-11 20:17:25,004 - DEBUG - Starting new HTTPS connection (1): reportallusa.com:443
-2024-09-11 20:17:25,305 - DEBUG - https://reportallusa.com:443 "GET /api/parcels?client=RqMXhNFKlQ&v=9&county_id=39067&owner=&parcel_id=&calc_acreage_min=300&returnGeometry=true&f=geojson&page=3 HTTP/11" 200 None
-2024-09-11 20:17:25,437 - DEBUG - Starting new HTTPS connection (1): reportallusa.com:443
-2024-09-11 20:17:25,863 - DEBUG - https://reportallusa.com:443 "GET /api/parcels?client=RqMXhNFKlQ&v=9&county_id=39067&owner=&parcel_id=&calc_acreage_min=300&returnGeometry=true&f=geojson&page=4 HTTP/11" 200 None
-2024-09-11 20:17:25,968 - DEBUG - Starting new HTTPS connection (1): reportallusa.com:443
-2024-09-11 20:17:26,330 - DEBUG - https://reportallusa.com:443 "GET /api/parcels?client=RqMXhNFKlQ&v=9&county_id=39067&owner=&parcel_id=&calc_acreage_min=300&returnGeometry=true&f=geojson&page=5 HTTP/11" 200 None
-2024-09-11 20:20:19,161 - INFO - Created 43 records
+2024-09-17 17:10:59,943 - DEBUG - Starting new HTTPS connection (1): reportallusa.com:443
+2024-09-17 17:11:00,674 - DEBUG - https://reportallusa.com:443 "GET /api/parcels?client=RqMXhNFKlQ&v=9&county_id=39059&owner=&parcel_id=&calc_acreage_min=300&returnGeometry=true&f=geojson&page=1 HTTP/11" 200 None
+2024-09-17 17:11:00,722 - DEBUG - Starting new HTTPS connection (1): reportallusa.com:443
+2024-09-17 17:11:00,987 - DEBUG - https://reportallusa.com:443 "GET /api/parcels?client=RqMXhNFKlQ&v=9&county_id=39059&owner=&parcel_id=&calc_acreage_min=300&returnGeometry=true&f=geojson&page=2 HTTP/11" 200 None
+2024-09-17 17:12:00,040 - INFO - Created 17 records
