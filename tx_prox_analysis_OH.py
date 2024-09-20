@@ -100,7 +100,7 @@ class App:
             self.root.withdraw()
 
             # Show completion dialog with file paths and processing time
-            self.show_completion_dialog(self.output_file, self.subset_file, processing_time)
+            # self.show_completion_dialog(self.output_file, self.subset_file, processing_time)
 
             # Ask the user if they want to perform buildable acreage analysis
             response = messagebox.askyesno("Buildable Acreage Analysis",
@@ -118,6 +118,8 @@ class App:
             self.status_label.config(text="Error")
         finally:
             self.cancel_button.config(state=tk.DISABLED)
+
+        self.root.quit()  # This will exit the Tkinter main loop
 
     def update_progress(self):
         if self.script_thread and self.script_thread.is_alive():
@@ -209,3 +211,4 @@ if __name__ == "__main__":
     root = tk.Tk()
     app = App(root, initial_file)
     root.mainloop()
+    sys.exit()  # Ensure the application exits completely

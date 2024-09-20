@@ -178,10 +178,10 @@ def main():
         root = tk.Tk()
         root.withdraw()
         root.attributes("-topmost", True)  # Ensure dialogs are always on top
-        response = messagebox.askyesno("Parcel Scoring", "Do you want to run a parcel score on the file?", parent=root)
+        response = messagebox.askyesno("Parcel Scoring", "Do you want to run a parcel score on data and clean the CSV file for import?", parent=root)
         if response:
             try:
-                script_path = os.path.join(os.path.dirname(__file__), 'score_csv.py')
+                script_path = os.path.join(os.path.dirname(__file__), 'clean_csv.py')
                 if not os.path.exists(script_path):
                     messagebox.showerror("Error", f'Script {script_path} not found.', parent=root)
                     return
@@ -192,5 +192,11 @@ def main():
     else:
         print("Analysis failed. No scoring script will be run.")
 
+    # Ensure the application terminates after completing all tasks
+    if root.winfo_exists():
+        root.quit()  # This will exit the Tkinter main loop
+    sys.exit(0)
+
 if __name__ == "__main__":
     main()
+    sys.exit(0)  # Ensure the application exits completely

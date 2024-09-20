@@ -174,10 +174,11 @@ class ReportAllParcelSearch(QWidget):
             logging.error(f'Error running the proximity analysis with script: {script_path}, error: {str(e)}')
         finally:
             self.close_application()
+            QApplication.quit()  # Quit the application completely
 
     def close_application(self):
         self.close()  # Close the QWidget
-        QApplication.quit()  # Quit the application completely
+
 
 
 def main():

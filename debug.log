@@ -1,5 +1,7 @@
-2024-09-17 17:10:59,943 - DEBUG - Starting new HTTPS connection (1): reportallusa.com:443
-2024-09-17 17:11:00,674 - DEBUG - https://reportallusa.com:443 "GET /api/parcels?client=RqMXhNFKlQ&v=9&county_id=39059&owner=&parcel_id=&calc_acreage_min=300&returnGeometry=true&f=geojson&page=1 HTTP/11" 200 None
-2024-09-17 17:11:00,722 - DEBUG - Starting new HTTPS connection (1): reportallusa.com:443
-2024-09-17 17:11:00,987 - DEBUG - https://reportallusa.com:443 "GET /api/parcels?client=RqMXhNFKlQ&v=9&county_id=39059&owner=&parcel_id=&calc_acreage_min=300&returnGeometry=true&f=geojson&page=2 HTTP/11" 200 None
-2024-09-17 17:12:00,040 - INFO - Created 17 records
+2024-09-19 19:45:48,498 - DEBUG - Starting new HTTPS connection (1): reportallusa.com:443
+2024-09-19 19:45:49,141 - DEBUG - https://reportallusa.com:443 "GET /api/parcels?client=RqMXhNFKlQ&v=9&county_id=39091&owner=&parcel_id=&calc_acreage_min=300&returnGeometry=true&f=geojson&page=1 HTTP/11" 200 None
+2024-09-19 19:45:49,218 - DEBUG - Starting new HTTPS connection (1): reportallusa.com:443
+2024-09-19 19:45:49,560 - DEBUG - https://reportallusa.com:443 "GET /api/parcels?client=RqMXhNFKlQ&v=9&county_id=39091&owner=&parcel_id=&calc_acreage_min=300&returnGeometry=true&f=geojson&page=2 HTTP/11" 200 None
+2024-09-19 19:45:49,620 - DEBUG - Starting new HTTPS connection (1): reportallusa.com:443
+2024-09-19 19:45:49,951 - DEBUG - https://reportallusa.com:443 "GET /api/parcels?client=RqMXhNFKlQ&v=9&county_id=39091&owner=&parcel_id=&calc_acreage_min=300&returnGeometry=true&f=geojson&page=3 HTTP/11" 200 None
+2024-09-19 19:46:29,526 - INFO - Created 24 records

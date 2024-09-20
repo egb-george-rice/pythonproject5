@@ -25,36 +25,81 @@ def format_whole_number(value):
 # Function to calculate quality score
 def calculate_quality_score(row):
     score = 0
-    try:
-        # Existing score calculations with updated weights and error handling
-        if 'BAcres' in row and pd.notna(row['BAcres']):
-            score += row['BAcres'] / 300
-        if 'acreage_adjacent_with_sameowner' in row and pd.notna(row['acreage_adjacent_with_sameowner']):
-            score += row['acreage_adjacent_with_sameowner'] / 500
-        if 'mkt_val_land' in row and pd.notna(row['mkt_val_land']) and 'BAcres' in row and pd.notna(row['BAcres']) and row['BAcres'] != 0:
-            score += row['mkt_val_land'] / row['BAcres'] / -10000
-        if 'distance_to_transmission_line_miles' in row and pd.notna(row['distance_to_transmission_line_miles']):
-            score += row['distance_to_transmission_line_miles'] / -0.5
+    # Extract the values from the row and handle missing values
+    acreage_calc = row.get('acreage_calc', 0)
+    Bacres = row.get('Bacres', 0)
+    distance_to_tx_line = row.get('distance_to_transmission_line_miles', 0)
+    voltage_of_closest_line = row.get('voltage_of_closest_line', 0)
+    mkt_val_land = row.get('mkt_val_land', 0)
+    acreage_adjacent_with_sameowner = row.get('acreage_adjacent_with_sameowner', 0)
 
-        # Land Use Code scoring
-        if 'land_use_code' in row and pd.notna(row['land_use_code']):
-            if row['land_use_code'] == 9:
-                score += 2
-            elif row['land_use_code'] == 8:
-                score += 1
+    # Calculating land value per acre
+    land_value_per_acre = mkt_val_land / acreage_calc if acreage_calc != 0 else 0
 
-        # Voltage-based scoring
-        if 'voltage_of_closest_line' in row and pd.notna(row['voltage_of_closest_line']):
-            voltage = row['voltage_of_closest_line']
-            if voltage < 100:
-                score += -2
-            elif 100 <= voltage < 500:
-                score += 1
-            elif voltage >= 500:
-                score += -1
+    # Calculate buildable acres percentage
+    buildable_acres_pc = (Bacres / acreage_calc) * 100 if acreage_calc != 0 else 0
 
-    except Exception as e:
-        raise ValueError(f"Error calculating score for row: {row}\nError details: {str(e)}")
+    # Calculate the new scoring criterion for adjacent acreage
+    adjacent_acreage_ratio = acreage_adjacent_with_sameowner / acreage_calc if acreage_calc != 0 else 0
+
+    # Debugging output
+    print(
+        f"Processing row with acreage_calc: {acreage_calc}, Bacres: {Bacres}, distance_to_tx_line: {distance_to_tx_line}, voltage: {voltage_of_closest_line}, land_value_per_acre: {land_value_per_acre}, adjacent_acreage_ratio: {adjacent_acreage_ratio}")
+
+    # 1. acreage_calc scoring (Weight: 5)
+    if acreage_calc > 750:
+        score += 15  # 3 points * weight 5
+    elif 501 <= acreage_calc <= 750:
+        score += 10  # 2 points * weight 5
+    elif 250 <= acreage_calc <= 500:
+        score += 5  # 1 point * weight 5
+
+    # 2. Buildable acres percentage (Weight: 5)
+    if buildable_acres_pc > 70:
+        score += 15  # 3 points * weight 5
+    elif 50 <= buildable_acres_pc <= 70:
+        score += 10  # 2 points * weight 5
+    elif 30 <= buildable_acres_pc <= 50:
+        score += 5  # 1 point * weight 5
+
+    # 3. Proximity to transmission line (Weight: 3)
+    if distance_to_tx_line == 0:
+        score += 9  # 3 points * weight 3
+    elif 0 < distance_to_tx_line <= 0.5:
+        score += 6  # 2 points * weight 3
+    elif 0.5 < distance_to_tx_line <= 1:
+        score += 3  # 1 point * weight 3
+
+    # 4. Size of transmission line (Weight: 1)
+    if voltage_of_closest_line > 500:
+        score += 3  # 3 points * weight 1
+    elif 235 <= voltage_of_closest_line <= 500:
+        score += 2  # 2 points * weight 1
+    elif 100 <= voltage_of_closest_line < 235:
+        score += 1  # 1 point * weight 1
+
+    # 5. Land value per acre (Weight: 1)
+    if land_value_per_acre > 2000:
+        score += 0  # 0 points * weight 1 (No points for land value per acre > $2000)
+    elif 1000 <= land_value_per_acre <= 2000:
+        score += 1  # 1 point * weight 1
+    elif 500 <= land_value_per_acre < 1000:
+        score += 2  # 2 points * weight 1
+    elif 0 < land_value_per_acre < 500:
+        score += 3  # 3 points * weight 1
+    # Land value per acre of '0' gets 0 points added to the score
+    elif land_value_per_acre == 0:
+        score += 0
+
+    # 6. Acreage adjacent with the same owner (Weight: 5)
+    if adjacent_acreage_ratio > 1:
+        score += 15  # 3 points * weight 5
+    elif 0.5 <= adjacent_acreage_ratio <= 1:
+        score += 10  # 2 points * weight 5
+    elif 0.1 <= adjacent_acreage_ratio < 0.5:
+        score += 5  # 1 point * weight 5
+
+    print(f"Calculated score for row: {score}")
     return score
 
 # Function to process the CSV file
@@ -104,8 +149,8 @@ def process_csv(input_file, output_file):
             df['acreage_adjacent_with_sameowner'] = df['acreage_adjacent_with_sameowner'].fillna(0).astype(int)
 
         # Calculate quality scores
-        # df['Score'] = df.apply(calculate_quality_score, axis=1)
-        # df['Score'] = df['Score'].round(1)
+        df['Score'] = df.apply(calculate_quality_score, axis=1)
+        df['Score'] = df['Score'].round(1)
 
         # Select and order the specified columns, ensure 'BAcres' is next to 'county_id'
         essential_columns = [
@@ -218,15 +263,22 @@ class CSVProcessorGUI(QWidget):
             process_csv(input_file, output_file)
             QMessageBox.information(self, 'Success', f'CSV file has been processed and saved to {output_file}')
             self.close()  # Close the main window after the message box is acknowledged
+            QApplication.quit()  # Terminate the application
         except Exception as e:
             QMessageBox.critical(self, 'Error', f'An error occurred while processing the CSV file: {e}')
             self.close()  # Close the main window after the error message box is acknowledged
+            QApplication.quit()  # Terminate the application
 
 def main():
-    initial_file = sys.argv[1] if len(sys.argv) > 1 else None
-    app = QApplication(sys.argv)
-    gui = CSVProcessorGUI(initial_file)
-    sys.exit(app.exec_())
+    try:
+        initial_file = sys.argv[1] if len(sys.argv) > 1 else None
+        app = QApplication(sys.argv)
+        gui = CSVProcessorGUI(initial_file)
+        sys.exit(app.exec_())
+    except Exception as e:
+        logging.critical(f"Unhandled exception: {e}")
+        QApplication.quit()  # Ensure the application quits even on errors
+
 
 if __name__ == '__main__':
     main()
